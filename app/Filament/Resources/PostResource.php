@@ -6,6 +6,7 @@ use App\Filament\Resources\PostResource\Pages;
 use App\Filament\Resources\PostResource\RelationManagers;
 use App\Models\Post;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -23,18 +24,27 @@ class PostResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')
-                    ->required(),
-                Forms\Components\FileUpload::make('image')
-                    ->directory('posts')
-                    ->columnSpanFull(),
-                Forms\Components\Select::make('houses')
-                    ->relationship('houses', 'name')
-                    ->multiple()
-                    ->preload()
-                    ->searchable()
-                    ->nullable(),
-            ]);
+                Section::make('Create a Post')
+                    ->description('Fill in the details for your post')
+                    ->schema([
+                        Forms\Components\TextInput::make('title')
+                            ->required()
+                            ->columnSpanFull(),
+                        Forms\Components\CheckboxList::make('houses')
+                            ->relationship('houses', 'name')
+                            ->searchable()
+                            ->columnSpanFull()
+                            ->nullable(),
+                    ])->columnSpan(1)
+                    ->columns(2),
+                Section::make('Meta')
+                    ->schema([
+                        Forms\Components\FileUpload::make('image')
+                            ->directory('posts')
+                            ->columnSpanFull(),
+
+                    ])->columnSpan(1),
+            ])->columns(2);
     }
 
     public static function table(Table $table): Table
