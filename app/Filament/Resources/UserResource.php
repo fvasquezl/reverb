@@ -21,7 +21,7 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
-    protected static ?string $navigationLabel = 'Admin Users';
+    protected static ?string $navigationLabel = 'Users';
 
 
 
@@ -45,6 +45,11 @@ class UserResource extends Resource
                             ->relationship('roles', 'name')
                             ->multiple()
                             ->preload()
+                            ->searchable()
+                            ->nullable(),
+                        Forms\Components\Select::make('houses')
+                            ->relationship('house', 'name')
+                            ->preload()
                             ->searchable(),
                     ])->columns(2)
             ]);
@@ -65,6 +70,10 @@ class UserResource extends Resource
                         'Editor' => 'warning',
                     })
                     ->searchable(),
+                Tables\Columns\TextColumn::make('house.name')
+                    ->icon('heroicon-o-home')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

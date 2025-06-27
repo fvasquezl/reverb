@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\House;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -22,5 +23,18 @@ class DatabaseSeeder extends Seeder
         ])->assignRole($role);
 
         User::factory(10)->create();
+
+        $houses = [
+            ['name' => 'Tijuana', 'address' => '123 Main St'],
+            ['name' => 'Rosarito', 'address' => '231 Main St'],
+            ['name' => 'Cuesta Blanca', 'address' => '321 Main St']
+        ];
+
+        foreach ($houses as $house) {
+            House::create([
+                'name' => $house['name'],
+                'address' => $house['address']
+            ]);
+        }
     }
 }
