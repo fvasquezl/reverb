@@ -19,6 +19,11 @@ class Post extends Model
         return $this->belongsToMany(House::class, 'house_post');
     }
 
-
-
+    /**
+     * Accessor para obtener la URL completa de la imagen
+     */
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? \Storage::url($this->image) : null;
+    }
 }

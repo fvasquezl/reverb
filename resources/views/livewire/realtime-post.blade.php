@@ -25,12 +25,11 @@
                         console.log('✅ Laravel Echo conectado en RealtimePosts');
                         clearInterval(checkEcho);
 
-                        // Suscribirse al canal
-                        window.Echo.channel('posts')
+                        // Suscribirse al canal privado de la casa del usuario
+                        const houseId = @js(auth()->user()->house_id);
+                        window.Echo.private('house.' + houseId)
                             .listen('.post.created', (data) => {
                                 console.log('📨 Nuevo post recibido:', data);
-
-                                // Llamar al método de Livewire directamente
                                 const component = @this;
                                 if (component) {
                                     component.call('handleNewPost', data);

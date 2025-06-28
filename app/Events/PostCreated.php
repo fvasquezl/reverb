@@ -15,7 +15,6 @@ class PostCreated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $post;
-    public $imageUrl;
 
     /**
      * Create a new event instance.
@@ -23,8 +22,6 @@ class PostCreated implements ShouldBroadcast
     public function __construct(Post $post)
     {
         $this->post = $post;
-        $this->imageUrl = $post->image ? \Storage::url($post->image) : null;
-
     }
 
     /**
@@ -34,9 +31,10 @@ class PostCreated implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
-        return [
-            new Channel('posts'),
-        ];
+        // Emitir en canales privados por cada house asociada al post
+        return $this->post->houses->map(function ($house) {
+            return new PrivateChannel('house.' . $house->id);
+        })->all();
     }
 
     /**
@@ -52,11 +50,10 @@ class PostCreated implements ShouldBroadcast
         return [
             'id' => $this->post->id,
             'title' => $this->post->title,
-            'image' => $this->imageUrl,
+            'image' => $this->post->image_url, // Usar accessor
             'created_at' => $this->post->created_at,
             'updated_at' => $this->post->updated_at,
             // Agrega aquí cualquier otro campo relevante
         ];
-
     }
 }

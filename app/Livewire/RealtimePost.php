@@ -10,25 +10,27 @@ class RealtimePost extends Component
     public $post;
     public $latestPost = [];
 
-
     protected $listeners = ['echo:posts,post.created' => 'handleNewPost'];
-
 
 
     public function mount()
     {
-        // Initialize the latestPost array if needed
-        $post = Post::latest()->first();
+        $user = auth()->user();
+        $post = null;
+        if ($user && $user->house_id) {
+            $post = Post::whereHas('houses', function ($q) use ($user) {
+                $q->where('houses.id', $user->house_id);
+            })->latest()->first();
+        }
         if ($post) {
             $this->latestPost = [
                 'id' => $post->id,
                 'title' => $post->title,
-                'image' => $post->image_url, // Use the accessor for proper URL
+                'image' => $post->image_url,
                 'created_at' => $post->created_at,
                 'updated_at' => $post->updated_at,
             ];
         }
-
     }
 
     public function handleNewPost($event = null)
@@ -45,6 +47,10 @@ class RealtimePost extends Component
             'created_at' => $event['created_at'] ?? null,
             'updated_at' => $event['updated_at'] ?? null,
         ];
+
+
+
+
 
     }
 

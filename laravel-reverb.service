@@ -1,0 +1,13 @@
+[Unit]
+Description=Laravel Reverb WebSocket Server
+After=network.target
+
+[Service]
+User=fvasquezl
+WorkingDirectory=/home/fvasquezl/Code/Laravel/reverb
+Restart=always
+ExecStart=/usr/bin/php /home/fvasquezl/Code/Laravel/reverb/artisan reverb:start
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+
+[Install]
+WantedBy=multi-user.target
