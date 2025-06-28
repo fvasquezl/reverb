@@ -137,3 +137,7 @@ Si tienes dudas sobre algún paso, revisa la documentación oficial de Laravel, 
   /usr/bin/php /home/fvasquezl/Code/Laravel/reverb/artisan queue:work
   ```
   Si funciona, asegúrate de que el archivo de servicio systemd use la misma ruta y usuario.
+
+
+Idea: se deben agregar un campo al post para de activacion un checbox que ective y desactive
+Este campo debe contar cuantas casas esta asignado el post, por ejemplo (Tijuana) entonces el siguiente activo puede ser (Rosarito) o (Rosarito Cuestablanca), pensar
