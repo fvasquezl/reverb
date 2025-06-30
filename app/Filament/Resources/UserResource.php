@@ -47,10 +47,11 @@ class UserResource extends Resource
                             ->preload()
                             ->searchable()
                             ->nullable(),
-                        Forms\Components\Select::make('houses')
+                        Forms\Components\Select::make('house_id')
                             ->relationship('house', 'name')
                             ->preload()
-                            ->searchable(),
+                            ->searchable()
+                            ->nullable(),
                     ])->columns(2)
             ]);
     }
