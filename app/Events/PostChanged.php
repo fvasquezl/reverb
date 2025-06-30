@@ -3,15 +3,13 @@
 namespace App\Events;
 
 use App\Models\Post;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class PostCreated implements ShouldBroadcast
+class PostChanged implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $post;
@@ -42,7 +40,7 @@ class PostCreated implements ShouldBroadcast
      */
     public function broadcastAs(): string
     {
-        return 'post.created';
+        return 'post.changed';
     }
 
     public function broadcastWith(): array
@@ -51,9 +49,9 @@ class PostCreated implements ShouldBroadcast
             'id' => $this->post->id,
             'title' => $this->post->title,
             'image' => $this->post->image_url, // Usar accessor
+            'active' => $this->post->active,
             'created_at' => $this->post->created_at,
             'updated_at' => $this->post->updated_at,
-            // Agrega aquí cualquier otro campo relevante
         ];
     }
 }

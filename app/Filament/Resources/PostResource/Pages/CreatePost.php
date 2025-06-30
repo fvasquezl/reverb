@@ -27,10 +27,10 @@ class CreatePost extends CreateRecord
             ->body('The Post has been created successfully.');
     }
 
-    protected function afterCreate(): void
-    {
-        $post = $this->record->fresh();
-        // Disparar el evento de broadcasting cuando se crea un post
-        broadcast(new PostCreated($post))->toOthers();
-    }
+    // protected function afterCreate(): void
+    // {
+    //     $post = $this->record->fresh();
+    //     // Disparar el evento de broadcasting cuando se crea un post
+    //     broadcast(new PostCreated($post))->toOthers();
+    // }
 }

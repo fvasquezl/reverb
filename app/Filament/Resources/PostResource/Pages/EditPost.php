@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PostResource\Pages;
 
+use App\Events\PostCreated;
 use App\Filament\Resources\PostResource;
 use Filament\Actions;
 use Filament\Notifications\Notification;
@@ -33,4 +34,11 @@ class EditPost extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    // protected function afterUpdate(): void
+    // {
+    //     $post = $this->record->fresh();
+    //     // Disparar el evento de broadcasting cuando se crea un post
+    //     broadcast(new PostCreated($post))->toOthers();
+    // }
 }

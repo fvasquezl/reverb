@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use App\Events\PostChanged;
 use App\Filament\Resources\PostResource\Pages;
-use App\Filament\Resources\PostResource\RelationManagers;
 use App\Models\Post;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -11,8 +11,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 
 class PostResource extends Resource
 {
@@ -42,7 +41,10 @@ class PostResource extends Resource
                         Forms\Components\FileUpload::make('image')
                             ->directory('posts')
                             ->columnSpanFull(),
-
+                        Forms\Components\Toggle::make('active')
+                            ->label('Active')
+                            ->helperText('When activated, other posts for the same houses will be deactivated')
+                            ->columnSpanFull(),
                     ])->columnSpan(1),
             ])->columns(2);
     }
@@ -56,6 +58,9 @@ class PostResource extends Resource
                 Tables\Columns\ImageColumn::make('image')
                     ->width(200)
                     ->height(50)
+                    ->searchable(),
+                Tables\Columns\CheckboxColumn::make('active')
+                    ->alignCenter()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('houses.name')
                     ->icon('heroicon-o-home')
