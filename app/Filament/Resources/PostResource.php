@@ -59,9 +59,21 @@ class PostResource extends Resource
                     ->width(200)
                     ->height(50)
                     ->searchable(),
-                Tables\Columns\CheckboxColumn::make('active')
+                Tables\Columns\ToggleColumn::make('active')
+                    ->label('Estado')
+                    ->onColor('success')
+                    ->offColor('gray')
+                    ->onIcon('heroicon-m-check-circle')
+                    ->offIcon('heroicon-m-x-circle')
                     ->alignCenter()
-                    ->searchable(),
+                    ->sortable()
+                    ->afterStateUpdated(function ($record, $state) {
+                        \Filament\Notifications\Notification::make()
+                            ->title($state ? 'Post activado' : 'Post desactivado')
+                            ->body($state ? 'Este post ahora está visible en las casas asociadas.' : 'El post ha sido desactivado.')
+                            ->success()
+                            ->send();
+                    }),
                 Tables\Columns\TextColumn::make('houses.name')
                     ->icon('heroicon-o-home')
                     ->badge()
@@ -104,4 +116,6 @@ class PostResource extends Resource
             'edit' => Pages\EditPost::route('/{record}/edit'),
         ];
     }
+
+
 }
