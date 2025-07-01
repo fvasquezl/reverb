@@ -106,9 +106,15 @@ class RoleResource extends Resource implements HasShieldPermissions
                     ->color('warning')
                     ->alignCenter()
                     ->label(__('filament-shield::filament-shield.column.guard_name')),
-                Tables\Columns\BadgeColumn::make('color')
+                Tables\Columns\TextColumn::make('color')
                     ->label('Color')
-                    ->color(fn($state) => $state),
+                    ->formatStateUsing(function ($state) {
+                        return "<div class='inline-flex items-center justify-center'>
+                            <div class='w-6 h-6 rounded-full border-2 border-gray-300' style='background-color: {$state};'></div>
+                        </div>";
+                    })
+                    ->html()
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('team.name')
                     ->default('Global')
                     ->badge()
