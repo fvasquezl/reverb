@@ -10,6 +10,7 @@ use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Colors\Color;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -65,8 +66,21 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('roles.name')
-                    ->badge()
-                    ->color(fn(string $state): string => static::getRoleColor($state))
+                    ->label('Role')
+                    ->formatStateUsing(function ($state, $record) {
+                        $color = $record->roles->first()?->color ?? '#9ca3af';
+                        $bg = lightenColor($color, 85);
+
+                        return "<span class='inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full'
+                    style='
+                        color: {$color};
+                        background-color: {$bg};
+                        border: 1px solid {$color};
+                    '>
+                    {$state}
+                </span>";
+                    })
+                    ->html()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('house.name')
                     ->icon('heroicon-o-home')
@@ -125,17 +139,5 @@ class UserResource extends Resource
         ];
     }
 
-    /**
-     * Get color for role badge
-     */
-    public static function getRoleColor(string $role): string
-    {
-        return match($role) {
-            'super_admin' => 'success',
-            'admin' => 'info',
-            'editor' => 'warning',
-            'user' => 'gray',
-            default => 'gray'
-        };
-    }
+
 }
