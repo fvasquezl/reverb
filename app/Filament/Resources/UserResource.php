@@ -66,10 +66,7 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->badge()
-                    ->color(fn(string $state): string => match ($state) {
-                        'super-admin' => 'success',
-                        'Editor' => 'warning',
-                    })
+                    ->color(fn(string $state): string => static::getRoleColor($state))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('house.name')
                     ->icon('heroicon-o-home')
@@ -126,5 +123,19 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
+    }
+
+    /**
+     * Get color for role badge
+     */
+    public static function getRoleColor(string $role): string
+    {
+        return match($role) {
+            'super_admin' => 'success',
+            'admin' => 'info',
+            'editor' => 'warning',
+            'user' => 'gray',
+            default => 'gray'
+        };
     }
 }

@@ -15,12 +15,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call([
+            ShieldSeeder::class,
+        ]);
 
-        $role = Role::create(['name' => 'super-admin']);
         User::factory()->create([
             'name' => 'Faustino Vasquez',
             'email' => 'fvasquez@local.com',
-        ])->assignRole($role);
+        ])->assignRole('super_admin');
 
         User::factory(10)->create();
 
