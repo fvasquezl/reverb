@@ -63,9 +63,25 @@ class RoleResource extends Resource implements HasShieldPermissions
                                     ->nullable()
                                     ->maxLength(255),
 
-                                Forms\Components\ColorPicker::make('color')
+                                Forms\Components\Select::make('color')
                                     ->label('Color')
-                                    ->required(),
+                                    ->required()
+                                    ->options(function () {
+                                        $colorMap = \App\Models\Role::getColorMap();
+                                        $options = [];
+                                        foreach (\App\Models\Role::getColorOptions() as $key => $label) {
+                                            $color = $colorMap[$key]['text'];
+                                            $options[$key] = <<<HTML
+                                                <div class="flex items-center gap-2">
+                                                    <div class="w-4 h-4 rounded-full flex-shrink-0" style="background-color: {$color};"></div>
+                                                    <span>{$label}</span>
+                                                </div>
+                                            HTML;
+                                        }
+                                        return $options;
+                                    })
+                                    ->searchable()
+                                    ->allowHtml(),
 
                                 Forms\Components\Select::make(config('permission.column_names.team_foreign_key'))
                                     ->label(__('filament-shield::filament-shield.field.team'))
@@ -108,9 +124,10 @@ class RoleResource extends Resource implements HasShieldPermissions
                     ->label(__('filament-shield::filament-shield.column.guard_name')),
                 Tables\Columns\TextColumn::make('color')
                     ->label('Color')
-                    ->formatStateUsing(function ($state) {
+                    ->formatStateUsing(function ($state, $record) {
+                        $colors = $record->getColorStyles();
                         return "<div class='inline-flex items-center justify-center'>
-                            <div class='w-6 h-6 rounded-full border-2 border-gray-300' style='background-color: {$state};'></div>
+                            <div class='w-6 h-6 rounded-full border-2 border-gray-300' style='background-color: {$colors['text']};'></div>
                         </div>";
                     })
                     ->html()

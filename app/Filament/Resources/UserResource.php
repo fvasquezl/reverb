@@ -65,23 +65,30 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('roles.name')
-                    ->label('Role')
+                Tables\Columns\TextColumn::make('roles')
+                    ->label('Roles')
                     ->formatStateUsing(function ($state, $record) {
-                        $color = $record->roles->first()?->color ?? '#9ca3af';
-                        $bg = lightenColor($color, 85);
-
-                        return "<span class='inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full'
-                    style='
-                        color: {$color};
-                        background-color: {$bg};
-                        border: 1px solid {$color};
-                    '>
-                    {$state}
-                </span>";
+                        $badges = '';
+                        foreach ($record->roles as $role) {
+                            $colors = $role->getColorStyles();
+                            $badges .= "<span class='inline-flex items-center rounded-md px-2 py-1 text-xs font-medium mr-1'
+                                style='
+                                    background-color: {$colors['bg']};
+                                    color: {$colors['text']};
+                                    box-shadow: inset 0 0 0 1px {$colors['ring']};
+                                '>
+                                {$role->name}
+                            </span>";
+                        }
+                        return $badges ?: '<span class="text-gray-400">No roles</span>';
                     })
                     ->html()
-                    ->searchable(),
+                    ->searchable(query: function ($query, string $search) {
+                        return $query->whereHas('roles', function ($q) use ($search) {
+                            $q->where('name', 'like', "%{$search}%");
+                        });
+                    }),
+
                 Tables\Columns\TextColumn::make('house.name')
                     ->icon('heroicon-o-home')
                     ->searchable()
